@@ -1,1 +1,17 @@
-- name: AWS Clean Up Workflow
+name: AWS Clean Up Workflow
+on:
+    workflow_dispatch:
+
+permissions:
+    id-token: write
+
+jobs:
+    aws_cleanup:
+         runs-on: ubuntu-latest
+         steps:
+             - name: Authintication to AWS using OpenID Connect 
+               uses: aws-actions/configure-aws-credentials@v4
+               with:
+                role-to-assume: ${{ secrets.AWS_ROLE }}
+                aws-region: eu-west-3
+
