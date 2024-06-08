@@ -1,6 +1,6 @@
 
 #CleanUp State Machines 
-Get-SFNStateMachineList | % { Remove-SFNStateMachine -StateMachineArn $PSItem.StateMachineArn }
+Get-SFNStateMachineList | % { Remove-SFNStateMachine -StateMachineArn $PSItem.StateMachineArn -Force }
 
 #CleanUp Activities 
-Get-SFNActivityList | % { Remove-SFNActivity -ActivityArn $PSItem.ActivityArn }
+Get-SFNActivityList | % { Remove-SFNActivity -ActivityArn $PSItem.ActivityArn -Force }
