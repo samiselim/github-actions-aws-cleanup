@@ -19,7 +19,12 @@ jobs:
           with:
               role-to-assume: ${{ secrets.AWS_ROLE }}
               aws-region: ${{ secrets.AWS_REGION }}
-              
+        - name: Installing Common AWS tools for Powershell
+          if: inputs.shell-type == 'power-shell'
+          shell: pwsh
+          run: Install-Module -Name AWS.Tools.Common
+
+
         - name: Clone Source Code from github  
           uses: actions/checkout@v4
 
@@ -51,7 +56,13 @@ jobs:
             with:
                 role-to-assume: ${{ secrets.AWS_ROLE }}
                 aws-region: ${{ secrets.AWS_REGION }}
-                
+          
+          - name: Installing Common AWS tools for Powershell
+            if: inputs.shell-type == 'power-shell'
+            shell: pwsh
+            run: Install-Module -Name AWS.Tools.Common
+
+      
           - name: Clone Source Code from github  
             uses: actions/checkout@v4
 
