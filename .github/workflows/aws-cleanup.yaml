@@ -11,8 +11,39 @@ permissions:
     id-token: write
 
 jobs:
-    aws-cleanup:
-        
+    aws-cleanup-EC2s:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Authintication to AWS using OpenID Connect 
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+              role-to-assume: ${{ secrets.AWS_ROLE }}
+              aws-region: ${{ secrets.AWS_REGION }}
+              
+        - name: Clone Source Code from github  
+          uses: actions/checkout@v4
+
+        - name: Installig Ec2 Module for pwsh
+          if: inputs.shell-type == 'power-shell'
+          shell: pwsh
+          run: Install-Module -Name AWS.Tools.EC2 -Force ## Running as Root user without CurrentUSer Parameter 
+       
+
+        - name: CleanUp state Machine using power shell 
+          if: inputs.shell-type == 'power-shell'
+          shell: pwsh
+          run: |
+            ./aws-cleanup-EC2s.ps1
+            
+        - name: CleanUp Sate MAchines using shell and aws cli 
+          if: inputs.shell-type == 'bash'
+          shell: bash
+          run: |
+            chmod +x aws-cleanup-EC2s.sh
+            ./aws-cleanup-EC2s.sh
+
+
+    aws-cleanup-stepFunctions:       
         runs-on: ubuntu-latest
         steps:
           - name: Authintication to AWS using OpenID Connect 
