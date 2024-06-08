@@ -1,18 +1,42 @@
 name: AWS Clean Up Workflow
 on:
     workflow_dispatch:
-
+        inputs:
+            shell-type:
+                type: choice
+                options:
+                    - power-shell
+                    - bash 
 permissions:
     id-token: write
 
 jobs:
-    aws_cleanup:
-         runs-on: ubuntu-latest
-         steps:
-             - name: Authintication to AWS using OpenID Connect 
-               uses: aws-actions/configure-aws-credentials@v4
-               with:
+    aws-cleanup:
+        
+        runs-on: ubuntu-latest
+        steps:
+          - name: Authintication to AWS using OpenID Connect 
+            uses: aws-actions/configure-aws-credentials@v4
+            with:
                 role-to-assume: ${{ secrets.AWS_ROLE }}
-                aws-region: eu-west-3
- 
-   
+                aws-region: ${{ secrets.AWS_REGION }}
+
+          - name: Installig Step Functions Module 
+            shell: pwsh
+            run: Install-Module -Name AWS.Tools.stepFunctions -Force ## Running as Root user without CurrentUSer Parameter 
+          - name: Clone Source Code from github  
+            uses: actions/checkout@v4
+
+          - name: CleanUp AS Step Function Resources 
+            if: inputs.shell-type == 'power-shell'
+            shell: pwsh
+            run: |
+              ./aws-cleanup-stepfunctions.ps1
+              
+          - name: CleanUp AS Step Function Resources 
+            if: inputs.shell-type == 'bash'
+            shell: bash
+            run: |
+              chmod +x aws-cleanup-stepfunctions.sh
+              ./aws-cleanup-stepfunctions.sh
+              
