@@ -20,12 +20,15 @@ jobs:
             with:
                 role-to-assume: ${{ secrets.AWS_ROLE }}
                 aws-region: ${{ secrets.AWS_REGION }}
-
-          - name: Installig Step Functions Module 
-            shell: pwsh
-            run: Install-Module -Name AWS.Tools.stepFunctions -Force ## Running as Root user without CurrentUSer Parameter 
+                
           - name: Clone Source Code from github  
             uses: actions/checkout@v4
+
+          - name: Installig Step Functions Module 
+            if: inputs.shell-type == 'power-shell'
+            shell: pwsh
+            run: Install-Module -Name AWS.Tools.stepFunctions -Force ## Running as Root user without CurrentUSer Parameter 
+         
 
           - name: CleanUp state Machine using power shell 
             if: inputs.shell-type == 'power-shell'
