@@ -27,13 +27,13 @@ jobs:
           - name: Clone Source Code from github  
             uses: actions/checkout@v4
 
-          - name: CleanUp AS Step Function Resources 
+          - name: CleanUp state Machine using power shell 
             if: inputs.shell-type == 'power-shell'
             shell: pwsh
             run: |
               ./aws-cleanup-stepfunctions.ps1
               
-          - name: CleanUp AS Step Function Resources 
+          - name: CleanUp Sate MAchines using shell and aws cli 
             if: inputs.shell-type == 'bash'
             shell: bash
             run: |
