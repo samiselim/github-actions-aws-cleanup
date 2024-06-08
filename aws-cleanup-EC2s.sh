@@ -6,7 +6,7 @@ RegionList=$(aws ec2 describe-regions --query "Regions[?starts_with(RegionName, 
 instance_ids=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].InstanceId" --output text)
 
 # Loop over each instance ID and terminate it
-for region in $RegionList; done
+for region in $RegionList; do
     for id in $instance_ids; do
         echo "Terminating instance with ID: $id in region: $region"
         aws ec2 terminate-instances --region $region --instance-ids $id
